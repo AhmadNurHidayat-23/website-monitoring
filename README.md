@@ -2,8 +2,6 @@
 
 Aplikasi lokal untuk memantau ketersediaan website, mengukur waktu respons, dan menelusuri riwayat gangguan. Portofolio Laravel dengan data nyata, MVC, dan desain Swiss editorial: off-white, royal blue, serta Helvetica Neue hitam.
 
-![Tampilan aplikasi dengan hasil pemeriksaan nyata](docs/images/monitoring-desktop.jpg)
-
 ## Fitur
 
 - Tambah, edit, dan hapus website dengan validasi server serta CSRF.
@@ -32,7 +30,7 @@ npm run build
 php artisan serve --host=127.0.0.1
 ```
 
-Buka http://127.0.0.1:8000. Klik **Tambah Website**, isi nama, URL HTTP/HTTPS publik, dan interval 1, 5, 10, 15, 30, atau 60 menit. Simpan, kemudian klik **Periksa Sekarang**. Detail menyediakan grafik, riwayat, edit, dan hapus. Database awal kosong; screenshot berasal dari pemeriksaan nyata.
+Buka http://127.0.0.1:8000. Klik **Tambah Website**, isi nama, URL HTTP/HTTPS publik, dan interval 1, 5, 10, 15, 30, atau 60 menit. Simpan, kemudian klik **Periksa Sekarang**. Detail menyediakan grafik, riwayat, edit, dan hapus. Database awal kosong; seluruh hasil berasal dari pemeriksaan nyata.
 
 Di terminal terpisah, jalankan scheduler:
 
