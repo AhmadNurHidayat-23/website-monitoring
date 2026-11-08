@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Check;
 use App\Models\Website;
 use Illuminate\Support\Facades\Cache;
 use Tests\MonitoringTestCase;
@@ -89,5 +90,52 @@ class WebsiteCrudTest extends MonitoringTestCase
         }
         $this->get('/')->assertSee('&lt;script&gt;', false)->assertDontSee('<script>alert(1)</script>', false);
         $this->get(route('websites.show', $website))->assertSee('Berikutnya')->assertViewHas('checks', fn ($checks) => $checks->count() === 20);
+    }
+
+    public function test_website_and_check_status_helpers_and_scopes(): void
+    {
+        $upSite = $this->website(['name' => 'Site Up', 'url' => 'https://up.example.com']);
+        $upSite->forceFill(['status' => 'up'])->save();
+
+        $downSite = $this->website(['name' => 'Site Down', 'url' => 'https://down.example.com']);
+        $downSite->forceFill(['status' => 'down'])->save();
+
+        $pendingSite = $this->website(['name' => 'Site Pending', 'url' => 'https://pending.example.com']);
+        $pendingSite->forceFill(['status' => 'pending'])->save();
+
+        $this->assertTrue($upSite->isUp());
+        $this->assertFalse($upSite->isDown());
+        $this->assertFalse($upSite->isPending());
+
+        $this->assertTrue($downSite->isDown());
+        $this->assertFalse($downSite->isUp());
+
+        $this->assertTrue($pendingSite->isPending());
+        $this->assertFalse($pendingSite->isUp());
+
+        $this->assertCount(1, Website::up()->where('id', $upSite->id)->get());
+        $this->assertCount(1, Website::down()->where('id', $downSite->id)->get());
+        $this->assertCount(1, Website::pending()->where('id', $pendingSite->id)->get());
+
+        $upCheck = $upSite->checks()->create([
+            'checked_url' => $upSite->url,
+            'status' => 'up',
+            'response_time_ms' => 50,
+            'checked_at' => now(),
+        ]);
+        $downCheck = $downSite->checks()->create([
+            'checked_url' => $downSite->url,
+            'status' => 'down',
+            'response_time_ms' => 0,
+            'checked_at' => now(),
+        ]);
+
+        $this->assertTrue($upCheck->isUp());
+        $this->assertFalse($upCheck->isDown());
+        $this->assertTrue($downCheck->isDown());
+        $this->assertFalse($downCheck->isUp());
+
+        $this->assertCount(1, Check::up()->where('id', $upCheck->id)->get());
+        $this->assertCount(1, Check::down()->where('id', $downCheck->id)->get());
     }
 }

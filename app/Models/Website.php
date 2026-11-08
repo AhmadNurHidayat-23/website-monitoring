@@ -30,4 +30,34 @@ class Website extends Model
     {
         return $this->checked_at === null || $this->checked_at->addMinutes($this->interval_minutes)->isPast();
     }
+
+    public function isUp(): bool
+    {
+        return $this->status === 'up';
+    }
+
+    public function isDown(): bool
+    {
+        return $this->status === 'down';
+    }
+
+    public function isPending(): bool
+    {
+        return $this->status === 'pending' || $this->status === null;
+    }
+
+    public function scopeUp($query)
+    {
+        return $query->where('status', 'up');
+    }
+
+    public function scopeDown($query)
+    {
+        return $query->where('status', 'down');
+    }
+
+    public function scopePending($query)
+    {
+        return $query->where('status', 'pending');
+    }
 }

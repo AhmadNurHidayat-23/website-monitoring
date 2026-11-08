@@ -20,4 +20,24 @@ class Check extends Model
     {
         return $this->belongsTo(Website::class);
     }
+
+    public function isUp(): bool
+    {
+        return $this->status === 'up';
+    }
+
+    public function isDown(): bool
+    {
+        return $this->status === 'down';
+    }
+
+    public function scopeUp($query)
+    {
+        return $query->where('status', 'up');
+    }
+
+    public function scopeDown($query)
+    {
+        return $query->where('status', 'down');
+    }
 }
